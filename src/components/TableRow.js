@@ -9,7 +9,7 @@ class TableRow extends Component {
     }
 
     delete() {
-        axios.get('http://localhost:4000/persons/delete/' + this.props.obj._id)
+        axios.get('http://localhost:4000/applications/delete/' + this.props.obj._id)
             .then(console.log('Deleted'))
             .catch(err => console.log(err))
     }
@@ -19,6 +19,9 @@ class TableRow extends Component {
             <tr>
                 <td>
                     {this.props.obj.name}
+                </td>
+                <td>
+                    {this.props.obj.identifier}
                 </td>
                 <td>
                     {this.props.obj.type}

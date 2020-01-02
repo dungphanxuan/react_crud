@@ -10,6 +10,7 @@ export default class Edit extends Component {
         this.onChangeType = this.onChangeType.bind(this);
         this.onChangeOs = this.onChangeOs.bind(this);
         this.onChangeDescription = this.onChangeDescription.bind(this);
+        this.onChangeIdentifier = this.onChangeIdentifier.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
 
         this.state = {
@@ -17,6 +18,7 @@ export default class Edit extends Component {
             os: '',
             type: '',
             description: '',
+            identifier: '',
             errors: {},
             selectedOption: null,
             selectedTypeOption: null,
@@ -53,18 +55,20 @@ export default class Edit extends Component {
 
 
     componentDidMount() {
-        axios.get('http://localhost:4000/persons/edit/' + this.props.match.params.id)
+        axios.get('http://localhost:4000/applications/edit/' + this.props.match.params.id)
             .then(response => {
                 this.setState({
                     name: response.data.name,
                     os: response.data.os,
                     type: response.data.type,
-                    description: response.data.description
+                    description: response.data.description,
+                    identifier: response.data.identifier
                 });
             })
             .catch(function (error) {
                 console.log(error);
-            })
+            });
+        document.title = "Edit application"
     }
 
     onChangeName(e) {
@@ -87,20 +91,28 @@ export default class Edit extends Component {
         })
     }
 
+    onChangeIdentifier(e) {
+        this.setState({
+            identifier: e.target.value
+        })
+    }
+
     onSubmit(e) {
         e.preventDefault();
         this.setState({
             errors: this.validator.validate(this.state),
         });
         if (this.validator.isValid) {
+
             const obj = {
                 name: this.state.name,
                 os: this.state.os,
                 type: this.state.type,
-                description: this.state.description
+                description: this.state.description,
+                identifier: this.state.identifier
             };
             console.log(obj);
-            axios.post('http://localhost:4000/persons/update/' + this.props.match.params.id, obj)
+            axios.post('http://localhost:4000/applications/update/' + this.props.match.params.id, obj)
                 .then(res => console.log(res.data));
 
             this.props.history.push('/index');
@@ -138,7 +150,8 @@ export default class Edit extends Component {
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label htmlFor="inputEmail3" className="col-sm-3 col-form-label">Name <span className="text-danger">*</span></label>
+                        <label htmlFor="inputEmail3" className="col-sm-3 col-form-label">Name <span
+                            className="text-danger">*</span></label>
                         <div className="col-sm-9">
                             <input type="text"
                                    className="form-control"
@@ -162,6 +175,18 @@ export default class Edit extends Component {
                                    value={this.state.description}
                                    className="form-control"
                                    onChange={this.onChangeDescription}
+                            />
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <label htmlFor="inputDescription"
+                               className="col-sm-3 col-form-label">Identifier</label>
+                        <div className="col-sm-9">
+                            <input type="text"
+                                   name="identifier"
+                                   value={this.state.identifier}
+                                   className="form-control"
+                                   onChange={this.onChangeIdentifier}
                             />
                         </div>
                     </div>

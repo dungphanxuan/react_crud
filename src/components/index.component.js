@@ -10,7 +10,7 @@ export default class Index extends Component {
     }
 
     componentDidMount() {
-        axios.get('http://localhost:4000/persons')
+        axios.get('http://localhost:4000/applications')
             .then(response => {
                 console.log(response.data);
                 this.setState({persons: response.data});
@@ -29,12 +29,13 @@ export default class Index extends Component {
     render() {
         return (
             <div>
-                <h3 align="center">Persons List</h3>
+                <h3 align="center">Application List</h3>
                 <Link to={'/create'} className="btn btn-primary">Create new</Link>
                 <table className="table table-striped table-bordered table-hover" style={{marginTop: 20}}>
                     <thead>
                     <tr>
                         <th>Name</th>
+                        <th>Identifier</th>
                         <th>OS</th>
                         <th>Type</th>
                         <th>Description</th>

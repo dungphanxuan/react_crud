@@ -10,6 +10,7 @@ export default class Create extends Component {
         this.onChangeOs = this.onChangeOs.bind(this);
         this.onChangeType = this.onChangeType.bind(this);
         this.onChangeDescription = this.onChangeDescription.bind(this);
+        this.onChangeIdentifier = this.onChangeIdentifier.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
 
         this.state = {
@@ -17,6 +18,7 @@ export default class Create extends Component {
             os: '',
             type: '',
             description: '',
+            identifier: '',
             errors: {},
             selectedOption: null,
             selectedTypeOption: null,
@@ -52,6 +54,10 @@ export default class Create extends Component {
         this.validator = new Validator(rules);
     }
 
+    componentDidMount(){
+        document.title = "Create application"
+    }
+
     onChangeName(e) {
         this.setState({
             [e.target.name]: e.target.value
@@ -78,6 +84,12 @@ export default class Create extends Component {
         });
     }
 
+    onChangeIdentifier(e) {
+        this.setState({
+            identifier: e.target.value
+        })
+    }
+
     onSubmit(e) {
         e.preventDefault();
         this.setState({
@@ -88,16 +100,18 @@ export default class Create extends Component {
                 name: this.state.name,
                 os: this.state.os,
                 type: this.state.type,
-                description: this.state.description
+                description: this.state.description,
+                identifier: this.state.identifier
             };
-            axios.post('http://localhost:4000/persons/add', obj)
+            axios.post('http://localhost:4000/applications/add', obj)
                 .then(res => console.log(res.data));
 
             this.setState({
                 name: '',
                 os: '',
                 type: '',
-                description: ''
+                description: '',
+                identifier: ''
             })
         }
     }
@@ -155,6 +169,18 @@ export default class Create extends Component {
                         <div className="col-sm-9">
                             <input type="text" name="description" value={this.state.description}
                                    className="form-control" id="inputEmail3" onChange={this.onChangeDescription}/>
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <label htmlFor="inputDescription"
+                               className="col-sm-3 col-form-label">Identifier</label>
+                        <div className="col-sm-9">
+                            <input type="text"
+                                   name="identifier"
+                                   value={this.state.identifier}
+                                   className="form-control"
+                                   onChange={this.onChangeIdentifier}
+                            />
                         </div>
                     </div>
                     <div className="form-group">
