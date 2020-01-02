@@ -21,13 +21,13 @@ class TableRow extends Component {
                     {this.props.obj.name}
                 </td>
                 <td>
-                    {this.props.obj.company}
+                    {this.props.obj.type}
                 </td>
                 <td>
-                    {this.props.obj.address}
+                    {this.props.obj.os}
                 </td>
                 <td>
-                    {this.props.obj.age}
+                    {this.props.obj.description}
                 </td>
                 <td>
                     <Link to={"/edit/" + this.props.obj._id} className="btn btn-primary">Edit</Link>

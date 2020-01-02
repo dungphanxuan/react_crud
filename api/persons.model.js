@@ -6,14 +6,14 @@ let Persons = new Schema({
     name: {
         type: String
     },
-    company: {
+    description: {
         type: String
     },
-    address: {
+    os: {
         type: String
     },
-    age: {
-        type: Number
+    type: {
+        type: String
     }
 }, {
     collection: 'persons'

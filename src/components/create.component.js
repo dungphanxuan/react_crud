@@ -1,23 +1,37 @@
 import React, {Component} from 'react';
 import Validator from './../utils/validator';
 import axios from 'axios';
+import Select from "react-select";
 
 export default class Create extends Component {
     constructor(props) {
         super(props);
         this.onChangeName = this.onChangeName.bind(this);
-        this.onChangeCompany = this.onChangeCompany.bind(this);
-        this.onChangeAddress = this.onChangeAddress.bind(this);
-        this.onChangeAge = this.onChangeAge.bind(this);
+        this.onChangeOs = this.onChangeOs.bind(this);
+        this.onChangeType = this.onChangeType.bind(this);
+        this.onChangeDescription = this.onChangeDescription.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
 
         this.state = {
             name: '',
-            company: '',
-            address: '',
-            age: '',
+            os: '',
+            type: '',
+            description: '',
             errors: {},
+            selectedOption: null,
+            selectedTypeOption: null,
         };
+
+        this.osOption = [
+            {value: 'ios', label: 'iOS'},
+            {value: 'android', label: 'Android'},
+            {value: 'windows', label: 'Windows'}
+        ];
+
+        this.typeOption = [
+            {value: 'store', label: 'Store'},
+            {value: 'inhouse', label: 'InHouse'}
+        ];
 
         const rules = [
             {
@@ -40,75 +54,111 @@ export default class Create extends Component {
 
     onChangeName(e) {
         this.setState({
-            name: e.target.value
+            [e.target.name]: e.target.value
         });
     }
 
-    onChangeCompany(e) {
-        this.setState({
-            company: e.target.value
-        });
+    handleChange = (selectedOption) => {
+        this.setState({os: selectedOption.value});
+        console.log(this.state);
+        console.log(`Option selected:`, selectedOption);
     }
 
-    onChangeAddress(e) {
-        this.setState({
-            address: e.target.value
-        });
+    onChangeOs(selectedOption) {
+        this.setState({os: selectedOption.value});
     }
 
-    onChangeAge(e) {
+    onChangeType(selectedTypeOption) {
+        this.setState({type: selectedTypeOption.value});
+    }
+
+    onChangeDescription(e) {
         this.setState({
-            age: e.target.value
+            description: e.target.value
         });
     }
 
     onSubmit(e) {
         e.preventDefault();
-
-        const obj = {
-            name: this.state.name,
-            company: this.state.company,
-            age: this.state.age
-        };
-        axios.post('http://localhost:4000/persons/add', obj)
-            .then(res => console.log(res.data));
-
         this.setState({
-            name: '',
-            company: '',
-            age: ''
-        })
+            errors: this.validator.validate(this.state),
+        });
+        if (this.validator.isValid) {
+            const obj = {
+                name: this.state.name,
+                os: this.state.os,
+                type: this.state.type,
+                description: this.state.description
+            };
+            axios.post('http://localhost:4000/persons/add', obj)
+                .then(res => console.log(res.data));
+
+            this.setState({
+                name: '',
+                os: '',
+                type: '',
+                description: ''
+            })
+        }
     }
 
     render() {
+        const {errors} = this.state;
+        const { selectedOption } = this.state;
+        const {selectedTypeOption} = this.state;
         return (
             <div style={{marginTop: 10}}>
-                <h3>Add New Person</h3>
+                <h3>Add New Application</h3>
                 <form onSubmit={this.onSubmit}>
-                    <div className="form-group">
-                        <label>Person Name: </label>
-                        <input type="text" className="form-control"
-                               value={this.state.name}
-                               onChange={this.onChangeName}
-                        />
+                    <div className="form-group row">
+                        <label className="col-md-3 col-form-label" htmlFor="select1">OS</label>
+                        <div className="col-md-9">
+                            <Select
+                                //className="form-control"
+                                name="os"
+                                autoFocus={true}
+                                value={this.osOption.filter(({value}) => value === this.state.os)}
+                                onChange={this.handleChange}
+                                options={this.osOption}/>
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <label className="col-md-3 col-form-label" htmlFor="select1">Type</label>
+                        <div className="col-md-9">
+                            <Select
+                                name="type"
+                                autoFocus={true}
+                                value={this.typeOption.filter(({value}) => value === this.state.type)}
+                                onChange={this.onChangeType}
+                                options={this.typeOption}/>
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <label htmlFor="inputEmail3" className="col-sm-3 col-form-label">Name <span className="text-danger">*</span></label>
+                        <div className="col-sm-9">
+                            <input type="text"
+                                   className="form-control"
+                                   id="inputEmail3"
+                                   name="name"
+                                   value={this.state.name}
+                                   placeholder="Application Name. Max 191 chars"
+                                   onChange={this.onChangeName}
+                            />
+                            {errors.name &&
+                            <div className="invalid-feedback" style={{display: 'block'}}>{errors.name}</div>}
+
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <label htmlFor="inputEmail3"
+                               className="col-sm-3 col-form-label">Description</label>
+                        <div className="col-sm-9">
+                            <input type="text" name="description" value={this.state.description}
+                                   className="form-control" id="inputEmail3" onChange={this.onChangeDescription}/>
+                        </div>
                     </div>
                     <div className="form-group">
-                        <label>Company Name: </label>
-                        <input type="text" className="form-control" value={this.state.company}
-                               onChange={this.onChangeCompany}/>
-                    </div>
-                    <div className="form-group">
-                        <label>Address Name: </label>
-                        <input type="text" className="form-control" value={this.state.address}
-                               onChange={this.onChangeAddress}/>
-                    </div>
-                    <div className="form-group">
-                        <label>Age: </label>
-                        <input type="text" className="form-control" value={this.state.age}
-                               onChange={this.onChangeAge}/>
-                    </div>
-                    <div className="form-group">
-                        <input type="submit" value="Register Person" className="btn btn-primary"/>
+                        <input type="submit" value="Register Application" className="btn btn-primary"/>
                     </div>
                 </form>
             </div>

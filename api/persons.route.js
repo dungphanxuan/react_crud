@@ -31,7 +31,9 @@ personRoutes.route('/').get(function (req, res) {
 personRoutes.route('/edit/:id').get(function (req, res) {
     let id = req.params.id;
     Person.findById(id, function (err, business) {
+        console.log(business);
         res.json(business);
+
     });
 });
 
@@ -41,11 +43,11 @@ personRoutes.route('/update/:id').post(function (req, res) {
         if (!person)
             res.status(404).send("data is not found");
         else {
-            //console.log(person);
+            console.log(person);
             person.name = req.body.name;
-            person.company = req.body.company;
-            person.address = req.body.address;
-            person.age = req.body.age;
+            person.os = req.body.os;
+            person.type = req.body.type;
+            person.description = req.body.description;
 
             person.save().then(business => {
                 res.json('Update complete');

@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import axios from 'axios';
 import TableRow from './TableRow';
+import {Link} from "react-router-dom";
 
 export default class Index extends Component {
     constructor(props) {
@@ -29,13 +30,14 @@ export default class Index extends Component {
         return (
             <div>
                 <h3 align="center">Persons List</h3>
+                <Link to={'/create'} className="btn btn-primary">Create new</Link>
                 <table className="table table-striped table-bordered table-hover" style={{marginTop: 20}}>
                     <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Company</th>
-                        <th>Address</th>
-                        <th>Age</th>
+                        <th>OS</th>
+                        <th>Type</th>
+                        <th>Description</th>
                         <th colSpan="2">Action</th>
                     </tr>
                     </thead>
